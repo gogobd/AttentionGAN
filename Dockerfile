@@ -22,45 +22,19 @@ ENV LC_ALL=en_US.UTF-8
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
 
-## https://github.com/cdr/code-server
-### Code server
-#RUN mkdir -p ~/.local/lib ~/.local/bin
-## RUN curl -sfL https://github.com/cdr/code-server/releases/download/v3.12.0/code-server-3.12.0-linux-amd64.tar.gz | tar -C ~/.local/lib -xz
-#RUN curl -sfL https://github.com/coder/code-server/releases/download/v4.0.1/code-server-4.0.1-linux-amd64.tar.gz | tar -C ~/.local/lib -xz
-#RUN mv ~/.local/lib/code-server-4.0.1-linux-amd64 ~/.local/lib/code-server-4.0.1
-#RUN ln -s ~/.local/lib/code-server-4.0.1/bin/code-server ~/.local/bin/code-server
-#RUN PATH="~/.local/bin:$PATH"
-
-ENV VERSION=4.0.0
+# Code server
+# https://github.com/coder/code-server/releases
+ARG VERSION=4.0.2
 RUN mkdir -p ~/.local/lib ~/.local/bin
-RUN curl -fL https://github.com/cdr/code-server/releases/download/v$VERSION/code-server-$VERSION-linux-amd64.tar.gz | tar -C ~/.local/lib -xz
+RUN curl -sfL https://github.com/cdr/code-server/releases/download/v$VERSION/code-server-$VERSION-linux-amd64.tar.gz | tar -C ~/.local/lib -xz
 RUN mv ~/.local/lib/code-server-$VERSION-linux-amd64 ~/.local/lib/code-server-$VERSION
 RUN ln -s ~/.local/lib/code-server-$VERSION/bin/code-server ~/.local/bin/code-server
 RUN PATH="~/.local/bin:$PATH"
-# Now visit http://127.0.0.1:8080. Your password is in ~/.config/code-server/config.yaml
-
-
-# ## Fix broken python plugin # https://github.com/cdr/code-server/issues/2341
-# #RUN mkdir -p ~/.local/share/code-server/ && mkdir -p ~/.local/share/code-server/User && echo "{\"extensions.autoCheckUpdates\": false, \"extensions.autoUpdate\": false}" > ~/.local/share/code-server/User/settings.json 
-# RUN curl -sfLO https://open-vsx.org/api/ms-toolsai/jupyter/2021.8.12/file/ms-toolsai.jupyter-2021.8.12.vsix \
-#  && curl -sfLO https://open-vsx.org/api/ms-python/python/2021.9.1218897484/file/ms-python.python-2021.9.1218897484.vsix \
-#  && ~/.local/bin/code-server --install-extension ./ms-toolsai.jupyter-2021.8.12.vsix || true \
-#  && ~/.local/bin/code-server --install-extension ./ms-python.python-2021.9.1218897484.vsix || true \
-#  && rm ms-toolsai.jupyter-2021.8.12.vsix \
-#  && rm ms-python.python-2021.9.1218897484.vsix
 
 WORKDIR /app
-
-# RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
-# RUN openssl req -x509 -nodes -newkey rsa:2048 -subj '/C=AT/ST=Vienna/L=Vienna/O=None/OU=None/CN=linux03.precalc.org/emailAddress=postmaster@example.com' -keyout /etc/ssl/private/selfsigned.key -out /etc/ssl/certs/selfsigned.crt
-# RUN openssl dhparam -out /stc/ssl/dhparam.pem 4096
-
-# CMD ~/.local/bin/code-server --bind-addr 0.0.0.0:443 --cert -- /app
-# CMD ~/.local/bin/code-server --bind-addr 0.0.0.0:443 --cert --cert-key /etc/ssl/certs/selfsigned.crt -- /app
-CMD ~/.local/bin/code-server --bind-addr 0.0.0.0:8082 -- /app
-# CMD sleep 1000000000
+ENV SHELL /bin/bash
+CMD ~/.local/bin/code-server --bind-addr 0.0.0.0:8080 /app
 
 # docker build -t attentiongan .
-# docker run --ipc host --gpus all -v /Volumes/remote/nasberrypi03.precalc.org/Public/Shared\ Data/deeplearning/datasets:/datasets -v $(pwd):/app -p 8080:443 -p 8081:8097 -p 8082:8082 -it -d --name attentiongan attentiongan
+# docker run --name attentiongan -v $(pwd):/app -p 8080-8089:8080-8089 -it -d attentiongan
 # docker exec -it attentiongan cat /root/.config/code-server/config.yaml
-
