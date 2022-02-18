@@ -1,0 +1,1 @@
+hardstatus alwayslastline "[%H] %-Lw%{=r}%n%f* %t%{-}%+LW %=%Y/%m/%d %c:%s"
