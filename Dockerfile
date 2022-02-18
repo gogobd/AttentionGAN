@@ -36,5 +36,6 @@ ENV SHELL /bin/bash
 CMD ~/.local/bin/code-server --bind-addr 0.0.0.0:8080 /app
 
 # docker build -t attentiongan .
-# docker run --name attentiongan -v $(pwd):/app -p 8080-8089:8080-8089 -it -d attentiongan
+# docker run --name attentiongan --ipc host --gpus all -v <DataDir/deeplearning>:/data -v $(pwd):/app -p 8080-8089:8080-8089 -it -d attentiongan
 # docker exec -it attentiongan cat /root/.config/code-server/config.yaml
+
